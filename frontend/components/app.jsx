@@ -4,9 +4,9 @@ const App = React.createClass({
 
   render() {
     return (
-      <div className="app-container">This is my heart beat app</div>
+      <div className="app-container">This is my heart beat app hopefully</div>
     );
-  }   
+  }
 });
 
 module.exports = App;
