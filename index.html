@@ -7,11 +7,49 @@
   </head>
   <body>
     <script type="text/javascript">
-      d3.csv("KaelynHR.csv", function (hRates) {
-        hRates.forEach(function (d) {
-          console.log(d);
-        })
-      })
+
+    let outerWidth = 700;
+    let outerHeight = 500;
+    let margin = { left: 30, top: 30, right: 30, bottom: 30 }
+    let xColumn = "Time"
+    let yColumn = "HR"
+
+    let svg = d3.select("body").append("svg")
+      .attr("width", outerWidth)
+      .attr("height", outerHeight)
+
+    let g = svg.append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    let path = g.append("path")
+      .attr("fill", "none")
+      .attr("stroke", "steelblue");
+
+    let innerWidth = outerWidth - margin.left - margin.right;
+    let innerHeigh = outerHeight - margin.top - margin.bottom;
+
+    let xScale = d3.scaleTime().range([0, innerWidth]);
+    let yScale = d3.scaleLinear().range([innerHeight, 0]);
+
+    let line = d3.line()
+      .x(function(d) { return xScale(d[xColumn]); })
+      .y(function(d) { return yScale(d[yColumn]); })
+
+    function render(data) {
+      xScale.domain( d3.extent(data, function (d) { return d[xColumn]; }));
+      yScale.domain( d3.extent(data, function (d) { return d[yColumn]; }));
+      path.attr("d", line(data));
+    }
+
+    const parseTime = d3.timeParse("%H:%M:%S");
+    function type(d) {
+      d.Time = parseTime(d.Time)
+      d.HR = +d.HR
+      return d;
+    }
+
+      d3.csv("KaelynHR.csv", type, render);
+
     </script>
     <!-- <div id='root'/> -->
   </body>
